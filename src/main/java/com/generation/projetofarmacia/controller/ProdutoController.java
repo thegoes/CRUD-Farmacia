@@ -16,48 +16,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.generation.projetofarmacia.model.CategoriaModel;
-import com.generation.projetofarmacia.repository.CategoriaRepository;
+import com.generation.projetofarmacia.model.ProdutoModel;
+import com.generation.projetofarmacia.repository.ProdutoRepository;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/categoria")
+@RequestMapping("/produto")
 @CrossOrigin("*")
-public class CategoriaController {
+public class ProdutoController {
 	@Autowired
-	private CategoriaRepository repository;
-
+	private ProdutoRepository repository;
 	@GetMapping
-	public ResponseEntity<List<CategoriaModel>> GetAll() {
+	public ResponseEntity<List<ProdutoModel>> GetAll() {
 		return ResponseEntity.ok(repository.findAll());
 	}
-
+	
 	@GetMapping("/{id}")
-	public ResponseEntity<CategoriaModel> GetById(@PathVariable Long id) {
+	public ResponseEntity<ProdutoModel> GetById(@PathVariable long id) {
 		return repository.findById(id).map(resp -> ResponseEntity.status(200).body(resp))
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID NÃO EXISTENTE"));
-
+				.orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID NÃO EXISTENTE"));
 	}
-
-	@GetMapping("/categoria/{Categoria}")
-	public ResponseEntity<List<CategoriaModel>> GetbyCategoria(@PathVariable String Categoria) {
-		return ResponseEntity.ok(repository.findByCategoriaContainingIgnoreCase(Categoria));
+	
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<ProdutoModel>> GetByNome(@PathVariable String nome) {
+		return ResponseEntity.ok(repository.findByNomeContainingIgnoreCase(nome));
 	}
-
+	
 	@PostMapping("/save")
-	public ResponseEntity<CategoriaModel> post(@Valid @RequestBody CategoriaModel categoria) {
-		return ResponseEntity.status(201).body(repository.save(categoria));
+	public ResponseEntity<ProdutoModel> post (@Valid @RequestBody ProdutoModel produto) {
+		return  ResponseEntity.status(201).body(repository.save(produto));
 	}
-
+	
 	@PutMapping("/update")
-	public ResponseEntity<CategoriaModel> put(@Valid @RequestBody CategoriaModel categoria) {
-		return ResponseEntity.status(200).body(repository.save(categoria));
+	public ResponseEntity<ProdutoModel> put (@Valid @RequestBody ProdutoModel produto) {
+		return ResponseEntity.status(200).body(repository.save(produto));
 	}
-
+	
 	@DeleteMapping("/remove/{id}")
 	public void delete(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
-
 }
